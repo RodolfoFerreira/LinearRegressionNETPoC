@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" Version="8.3.0.1" />
+      <PackageReference Include="Microsoft.ML.LightGbm" Version="4.0.2" />
       <PackageReference Include="Microsoft.ML.Mkl.Components" Version="4.0.2" />
       <PackageReference Include="Microsoft.ML.Mkl.Redist" Version="4.0.2" />
       <PackageReference Include="Microsoft.ML.TimeSeries" Version="4.0.2" />
