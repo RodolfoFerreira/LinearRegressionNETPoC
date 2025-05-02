@@ -12,23 +12,24 @@ var mlContext = new MLContext();
 // Simulação de 90 dias de saldo (últimos 3 meses)
 var random = new Random();
 var saldos = new List<SaldoEstoque>();
-var path = @"SEU PATH AQUI";
+var path = @"C:\Users\rodolfo.ferreira\Downloads";
 var data = File.ReadAllLines(@$"{path}\data.csv").Skip(1).Select(a => a.Split(","));
 saldos.AddRange(data.Select(x => new SaldoEstoque { Data = DateTime.Parse(x[0].Replace("\"", "")), Saldo = float.Parse(x[2].Replace("\"", ""), CultureInfo.InvariantCulture) }));
+saldos = saldos.TakeLast(900).ToList();
 
-var dataView = mlContext.Data.LoadFromEnumerable(saldos);
+    var dataView = mlContext.Data.LoadFromEnumerable(saldos);
 
 
 // Configura o modelo SSA (Singular Spectrum Analysis)
 var forecastingPipeline = mlContext.Forecasting.ForecastBySsa(
     outputColumnName: "ForecastedSaldo",
     inputColumnName: "Saldo",
-    windowSize: 30, // tamanho da janela usada para decompor a série
+    windowSize: 14, // tamanho da janela usada para decompor a série
     seriesLength: saldos.Count, // tamanho da série histórica
     trainSize: saldos.Count,
-    horizon: 30); // número de dias a prever
+    horizon: 30);// número de dias a prever
 
-var model = forecastingPipeline.Fit(dataView);
+var model = forecastingPipeline.Fit(dataView);  
 
 // Cria o forecast engine
 var forecastEngine = model.CreateTimeSeriesEngine<SaldoEstoque, PrevisaoSaldo>(mlContext);
@@ -55,7 +56,7 @@ for (int i = 0; i < forecast.ForecastedSaldo.Length; i++)
 var plotModel = new PlotModel
 {
     Title = "Previsão de Estoque dos próximos 30 dias",
-};
+};      
 
 // Criar o modelo de gráfico
 plotModel.Legends.Add(new Legend()
